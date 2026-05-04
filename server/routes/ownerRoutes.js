@@ -22,6 +22,7 @@ ownerRouter.post("/delete-car", protect, deleteCar);
 ownerRouter.get("/dashboard", protect, getDashboardData);
 ownerRouter.get("/imagekit-auth", protect, (req, res) => {
   try {
+    console.log("ImageKit methods:", Object.keys(imageKit));
     const result = imageKit.getAuthenticationParameters();
     res.json(result);
   } catch (error) {
