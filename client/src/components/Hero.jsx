@@ -50,6 +50,7 @@ const Hero = () => {
               required
               value={pickupLocation}
               onChange={(e) => setPickupLocation(e.target.value)}
+              style={{ paddingLeft: 0, marginLeft: "-3px" }}
             >
               <option value="">Pickup Location</option>
               {cityList.map((city) => (
@@ -58,7 +59,7 @@ const Hero = () => {
                 </option>
               ))}
             </select>
-            <p className="px-1 text-sm text-gray-500">
+            <p className=" text-sm text-gray-500">
               {pickupLocation ? pickupLocation : "Select A Pickup Location"}
             </p>
           </div>
