@@ -8,7 +8,6 @@ import ImageKit from "imagekit-javascript";
 const imagekit = new ImageKit({
   publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
   urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
-  authenticationEndpoint: `${import.meta.env.VITE_BASE_URL}/api/owner/imagekit-auth`,
 });
 
 const AddCar = () => {
@@ -54,11 +53,17 @@ const AddCar = () => {
     setIsLoading(true);
 
     try {
+      // Get ImageKit auth params from backend (with auth token)
+      const { data: authData } = await axios.get("/api/owner/imagekit-auth");
+
       const uploadPromises = images.map((imageFile) =>
         imagekit.upload({
           file: imageFile,
           fileName: imageFile.name,
           folder: "/cars",
+          token: authData.token,
+          signature: authData.signature,
+          expire: authData.expire,
         }),
       );
 
