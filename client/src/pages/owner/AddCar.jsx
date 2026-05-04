@@ -106,7 +106,7 @@ const AddCar = () => {
               accept="image/*"
               multiple
               hidden
-              onChange={(e) => setImages([...e.target.files].reverse())}
+              onChange={(e) => setImages([...e.target.files])}
             />
             <p className="text-sm text-gray-500">
               {images.length > 0
@@ -237,21 +237,6 @@ const AddCar = () => {
         </div>
 
         {/* Car Location */}
-        {/* <div className="grid grid-cols-1 gap-6">
-          <div className="flex flex-col w-full">
-            <label>Location</label>
-            <input
-              required
-              type="text"
-              placeholder="Sandton, Johannesburg"
-              value={car.location}
-              onChange={(e) => setCar({ ...car, location: e.target.value })}
-              className="px-3 py-2 mt-1 border border-borderColor rounded-md outline-none"
-            />
-          </div>
-        </div> */}
-
-        {/* Car Location */}
         <div className="grid grid-cols-1 gap-6">
           <div className="flex flex-col w-full">
             <label>Location</label>
@@ -271,7 +256,7 @@ const AddCar = () => {
           </div>
         </div>
 
-        {/* Car  Description */}
+        {/* Car Description */}
         <div className="flex flex-col w-full">
           <label>Description</label>
           <textarea
@@ -286,7 +271,7 @@ const AddCar = () => {
 
         <button className="flex items-center gap-2 px-4 py-2.5 mt-4 bg-primary text-white rounded-md font-medium w-max cursor-pointer">
           <img src={assets.tick_icon} alt="Tick Icon" />
-          {isLoading ? "Listing Your Car..." : " List Your Car"}
+          {isLoading ? "Listing Your Car..." : "List Your Car"}
         </button>
       </form>
     </div>
