@@ -53,19 +53,19 @@ const AddCar = () => {
     setIsLoading(true);
 
     try {
-      // Get ImageKit auth params from backend (with auth token)
-      const { data: authData } = await axios.get("/api/owner/imagekit-auth");
+      const uploadPromises = images.map(async (imageFile) => {
+        // Get fresh auth params for each image
+        const { data: authData } = await axios.get("/api/owner/imagekit-auth");
 
-      const uploadPromises = images.map((imageFile) =>
-        imagekit.upload({
+        return imagekit.upload({
           file: imageFile,
           fileName: imageFile.name,
           folder: "/cars",
           token: authData.token,
           signature: authData.signature,
           expire: authData.expire,
-        }),
-      );
+        });
+      });
 
       const uploadedImages = await Promise.all(uploadPromises);
       const imageUrls = uploadedImages.map((img) => img.url);
