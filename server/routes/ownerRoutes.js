@@ -21,8 +21,13 @@ ownerRouter.post("/toggle-car", protect, toggleCarAvailability);
 ownerRouter.post("/delete-car", protect, deleteCar);
 ownerRouter.get("/dashboard", protect, getDashboardData);
 ownerRouter.get("/imagekit-auth", protect, (req, res) => {
-  const result = imageKit.getAuthenticationParameters();
-  res.json(result);
+  try {
+    const result = imageKit.getAuthenticationParameters();
+    res.json(result);
+  } catch (error) {
+    console.error("ImageKit auth error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
 });
 ownerRouter.post(
   "/update-image",
