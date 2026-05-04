@@ -2,7 +2,6 @@ import imageKit from "../configs/imageKit.js";
 import User from "../models/User.js";
 import Car from "../models/Car.js";
 import Booking from "../models/Booking.js";
-import fs from "fs";
 
 // Change User Role
 export const changeRoleToOwner = async (req, res) => {

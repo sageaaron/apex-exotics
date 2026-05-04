@@ -40,7 +40,6 @@ ownerRouter.get("/imagekit-auth", protect, (req, res) => {
 
     res.json({ token, expire, signature });
   } catch (error) {
-    console.error("ImageKit auth error:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
