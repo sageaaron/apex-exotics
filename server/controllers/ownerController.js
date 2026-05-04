@@ -77,7 +77,7 @@ export const toggleCarAvailability = async (req, res) => {
     await car.save();
 
     res.json({
-      success: false,
+      success: true,
       message: `Car Is Now ${car.isAvailable ? "Available" : "Unavailable"}`,
     });
   } catch (error) {

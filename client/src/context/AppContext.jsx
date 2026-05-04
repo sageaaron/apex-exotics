@@ -22,7 +22,7 @@ export const AppProvider = ({ children }) => {
   // Check If User Is Logged In
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("/api/users/data");
+      const { data } = await axios.get("/api/user/data");
 
       if (data.success) {
         setUser(data.user);

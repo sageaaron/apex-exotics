@@ -1,11 +1,14 @@
 import { useState } from "react";
 import Title from "../../components/owner/Title";
-import { assets } from "../../assets/assets";
+import { assets, cityList } from "../../assets/assets";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const AddCar = () => {
-  const currency = import.meta.env.VITE_CURRENCY;
+  const { axios, currency } = useAppContext();
 
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [car, setCar] = useState({
     brand: "",
     model: "",
@@ -19,8 +22,45 @@ const AddCar = () => {
     description: "",
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isLoading) {
+      return null;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      images.forEach((img) => formData.append("images", img));
+      formData.append("carData", JSON.stringify(car));
+
+      const { data } = await axios.post("/api/owner/add-car", formData);
+
+      if (data.success) {
+        toast.success(data.message);
+        setImages([]);
+        setCar({
+          brand: "",
+          model: "",
+          year: 0,
+          pricePerDay: 0,
+          category: "",
+          transmission: "",
+          fuel_type: "",
+          seating_capacity: 0,
+          location: "",
+          description: "",
+        });
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -35,22 +75,45 @@ const AddCar = () => {
         className="flex flex-col gap-5 text-gray-500 text-sm mt-6 max-w-xl"
       >
         {/* Car Image */}
-        <div className="flex items-center gap-2 w-full">
-          <label htmlFor="car-image">
-            <img
-              src={image ? URL.createObjectURL(image) : assets.upload_icon}
-              alt="Upload Icon"
-              className="h-14 rounded cursor-pointer"
-            />
+        <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-wrap gap-2">
+            {images.length > 0 ? (
+              images.map((img, index) => (
+                <img
+                  key={index}
+                  src={URL.createObjectURL(img)}
+                  alt={`Car Image ${index + 1}`}
+                  className="h-14 rounded object-cover"
+                />
+              ))
+            ) : (
+              <label htmlFor="car-image">
+                <img
+                  src={assets.upload_icon}
+                  alt="Upload Icon"
+                  className="h-14 rounded cursor-pointer"
+                />
+              </label>
+            )}
+          </div>
+          <label
+            htmlFor="car-image"
+            className="flex items-center gap-2 cursor-pointer"
+          >
             <input
               type="file"
               id="car-image"
               accept="image/*"
+              multiple
               hidden
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={(e) => setImages([...e.target.files].reverse())}
             />
+            <p className="text-sm text-gray-500">
+              {images.length > 0
+                ? `${images.length} Image(s) Selected — Click To Change`
+                : "Upload Images Of Your Car (Front First)"}
+            </p>
           </label>
-          <p className="text-sm text-gray-500">Upload A Picture Of Your Car</p>
         </div>
 
         {/* Car Brand & Model */}
@@ -174,7 +237,7 @@ const AddCar = () => {
         </div>
 
         {/* Car Location */}
-        <div className="grid grid-cols-1 gap-6">
+        {/* <div className="grid grid-cols-1 gap-6">
           <div className="flex flex-col w-full">
             <label>Location</label>
             <input
@@ -185,6 +248,26 @@ const AddCar = () => {
               onChange={(e) => setCar({ ...car, location: e.target.value })}
               className="px-3 py-2 mt-1 border border-borderColor rounded-md outline-none"
             />
+          </div>
+        </div> */}
+
+        {/* Car Location */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className="flex flex-col w-full">
+            <label>Location</label>
+            <select
+              required
+              value={car.location}
+              onChange={(e) => setCar({ ...car, location: e.target.value })}
+              className="px-3 py-2 mt-1 border border-borderColor rounded-md outline-none"
+            >
+              <option value="">Select A Location</option>
+              {cityList.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -203,7 +286,7 @@ const AddCar = () => {
 
         <button className="flex items-center gap-2 px-4 py-2.5 mt-4 bg-primary text-white rounded-md font-medium w-max cursor-pointer">
           <img src={assets.tick_icon} alt="Tick Icon" />
-          List Your Car
+          {isLoading ? "Listing Your Car..." : " List Your Car"}
         </button>
       </form>
     </div>

@@ -1,14 +1,37 @@
+import { motion } from "motion/react";
+
 const Newsletter = () => {
   return (
-    <div className="flex flex-col items-center justify-center text-center space-y-2 max-md:px-4 my-10 mb-40">
-      <h1 className="md:text-4xl text-2xl font-semibold">
+    <motion.div
+      initial={{ y: 30, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.3 }}
+      className="flex flex-col items-center justify-center text-center space-y-2 max-md:px-4 my-10 mb-40"
+    >
+      <motion.h1
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="md:text-4xl text-2xl font-semibold"
+      >
         Join the Apex Circle
-      </h1>
-      <p className="md:text-lg text-gray-500/70 pb-8">
+      </motion.h1>
+      <motion.p
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="md:text-lg text-gray-500/70 pb-8"
+      >
         Be the first to access exclusive vehicles, private listings, and premium
         experiences.
-      </p>
-      <form className="flex items-center justify-between max-w-2xl w-full md:h-13 h-12">
+      </motion.p>
+      <motion.form
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="flex items-center justify-between max-w-2xl w-full md:h-13 h-12"
+      >
         <input
           required
           className="border border-gray-300 rounded-md h-full border-r-0 outline-none w-full rounded-r-none px-3 text-gray-500"
@@ -21,8 +44,8 @@ const Newsletter = () => {
         >
           Subscribe
         </button>
-      </form>
-    </div>
+      </motion.form>
+    </motion.div>
   );
 };
 
