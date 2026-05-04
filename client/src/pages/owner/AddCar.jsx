@@ -8,6 +8,7 @@ const AddCar = () => {
   const { axios, currency } = useAppContext();
 
   const [images, setImages] = useState([]);
+  const [dragIndex, setDragIndex] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [car, setCar] = useState({
     brand: "",
@@ -21,6 +22,24 @@ const AddCar = () => {
     location: "",
     description: "",
   });
+
+  const handleDragStart = (index) => {
+    setDragIndex(index);
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (dragIndex === null || dragIndex === index) return;
+    const reordered = [...images];
+    const dragged = reordered.splice(dragIndex, 1)[0];
+    reordered.splice(index, 0, dragged);
+    setImages(reordered);
+    setDragIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDragIndex(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,12 +98,25 @@ const AddCar = () => {
           <div className="flex flex-wrap gap-2">
             {images.length > 0 ? (
               images.map((img, index) => (
-                <img
+                <div
                   key={index}
-                  src={URL.createObjectURL(img)}
-                  alt={`Car Image ${index + 1}`}
-                  className="h-14 rounded object-cover"
-                />
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`relative cursor-grab ${dragIndex === index ? "opacity-50" : "opacity-100"}`}
+                >
+                  <img
+                    src={URL.createObjectURL(img)}
+                    alt={`Car Image ${index + 1}`}
+                    className="h-14 rounded object-cover"
+                  />
+                  {index === 0 && (
+                    <span className="absolute bottom-0 left-0 right-0 text-center text-white text-xs bg-black/50 rounded-b">
+                      Cover
+                    </span>
+                  )}
+                </div>
               ))
             ) : (
               <label htmlFor="car-image">
@@ -110,8 +142,8 @@ const AddCar = () => {
             />
             <p className="text-sm text-gray-500">
               {images.length > 0
-                ? `${images.length} Image(s) Selected — Click To Change`
-                : "Upload Images Of Your Car (Front First)"}
+                ? `${images.length} Image(s) Selected — Drag To Reorder, Cover Image Should Be The Front Of Your Car`
+                : "Upload Images Of Your Car"}
             </p>
           </label>
         </div>
