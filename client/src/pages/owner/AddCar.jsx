@@ -3,6 +3,13 @@ import Title from "../../components/owner/Title";
 import { assets, cityList } from "../../assets/assets";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
+import ImageKit from "imagekit-javascript";
+
+const imagekit = new ImageKit({
+  publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+  urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
+  authenticationEndpoint: `${import.meta.env.VITE_BASE_URL}/api/owner/imagekit-auth`,
+});
 
 const AddCar = () => {
   const { axios, currency } = useAppContext();
@@ -43,19 +50,25 @@ const AddCar = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (isLoading) {
-      return null;
-    }
-
+    if (isLoading) return null;
     setIsLoading(true);
 
     try {
-      const formData = new FormData();
-      images.forEach((img) => formData.append("images", img));
-      formData.append("carData", JSON.stringify(car));
+      const uploadPromises = images.map((imageFile) =>
+        imagekit.upload({
+          file: imageFile,
+          fileName: imageFile.name,
+          folder: "/cars",
+        }),
+      );
 
-      const { data } = await axios.post("/api/owner/add-car", formData);
+      const uploadedImages = await Promise.all(uploadPromises);
+      const imageUrls = uploadedImages.map((img) => img.url);
+
+      const { data } = await axios.post("/api/owner/add-car", {
+        carData: car,
+        images: imageUrls,
+      });
 
       if (data.success) {
         toast.success(data.message);

@@ -16,28 +16,13 @@ export const changeRoleToOwner = async (req, res) => {
   }
 };
 
-// List Car
+// Add Car
 export const addCar = async (req, res) => {
   try {
     const { _id } = req.user;
-    let car = JSON.parse(req.body.carData);
-    const imageFiles = req.files;
+    const { carData, images } = req.body;
 
-    // Upload All Images To ImageKit
-    const uploadPromises = imageFiles.map(async (imageFile) => {
-      const response = await imageKit.files.upload({
-        file: fs.createReadStream(imageFile.path),
-        fileName: imageFile.originalname,
-        folder: "/cars",
-      });
-
-      return response.url;
-    });
-
-    const images = await Promise.all(uploadPromises);
-
-    // Save Car To Database
-    await Car.create({ ...car, owner: _id, images });
+    await Car.create({ ...carData, owner: _id, images });
 
     res.json({ success: true, message: "Car Successfully Added" });
   } catch (error) {
