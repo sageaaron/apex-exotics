@@ -16,7 +16,7 @@ export const changeRoleToOwner = async (req, res) => {
   }
 };
 
-// List Car
+// Add Car
 export const addCar = async (req, res) => {
   try {
     const { _id } = req.user;
