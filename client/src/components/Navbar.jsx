@@ -65,6 +65,11 @@ const Navbar = () => {
         <div className="flex max-sm:flex-col items-start sm:items-center gap-6">
           <button
             onClick={() => {
+              if (!user) {
+                setShowLogin(true);
+                setOpen(false);
+                return;
+              }
               isOwner ? navigate("/owner") : changeRole();
               setOpen(false);
             }}
